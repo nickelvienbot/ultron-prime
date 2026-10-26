@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Ultron Prime — design tokens
+   Governing rule: WEIGHT AND MATERIALITY, NOT GLOW.
+   Machined means solid, matte, bevelled, heavy. Glow is what a screen does;
+   depth is what a machine does. Nothing below produces a glow.
+
+   Forbidden by design (do not add): rounded pills, glassmorphism, holograms,
+   CRT/scanline overlays, decorative gradients, glow as ornament, particle
+   fields as ambience, mousemove tilt.
+--------------------------------------------------------------------------- */
+
+@theme {
+  /* -- Surfaces: graphite and steel, stepped by value, never by hue -------- */
+  --color-void: #0b0d0f;
+  --color-panel: #12161a;
+  --color-raised: #1b2126;
+  --color-hairline: #262d33;
+
+  /* -- Text and structure ------------------------------------------------- */
+  --color-steel-500: #6b7681; /* disabled, dividers */
+  --color-steel-300: #a8b2bc; /* secondary text     */
+  --color-steel-100: #e4e9ed; /* primary text       */
+
+  /* -- Semantic, earned never ambient ------------------------------------- */
+  --color-prime-amber: #e8a13a; /* authority: active, needs-you   */
+  --color-prime-ember: #c8462a; /* alarm: destructive, failed     */
+  --color-prime-slate: #4a5a6a; /* cold nominal: info, idle       */
+  --color-verify: #35a06b; /* verified / complete            */
+
+  /* -- Geometry: zero radius. Hard edges ARE the identity. ---------------- */
+  --radius-*: initial; /* removes every default rounded step */
+  --radius-hard: 0px;
+
+  /* -- Type --------------------------------------------------------------- */
+  --font-label: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* -- Motion: mechanical, not bouncy. No spring, no overshoot. ---------- */
+  --ease-mech: cubic-bezier(0.2, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 160ms;
+  --duration-slow: 180ms;
+}
+
+/* Machined panel: an inset edge (light top / dark bottom) reads as physical
+   depth without a single pixel of glow. Used on recessed surfaces. */
+@utility panel-inset {
+  background-color: var(--color-panel);
+  border: 1px solid var(--color-hairline);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.03),
+    inset 0 -1px 0 rgb(0 0 0 / 0.4);
+}
+
+/* Raised surface: opposite pairing, so it reads as standing off the ground. */
+@utility panel-raised {
+  background-color: var(--color-raised);
+  border: 1px solid var(--color-hairline);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.05),
+    0 1px 0 rgb(0 0 0 / 0.5);
+}
+
+/* Chamfered corner: cut, not rounded. Matches Ultron's angular faceting. */
+@utility panel-chamfer {
+  clip-path: polygon(
+    0 8px,
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% 100%,
+    0 100%
+  );
+}
+
+html,
+body {
+  background-color: var(--color-void);
+  color: var(--color-steel-100);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums; /* columns must not shimmer */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Labels are uppercase, tracked, condensed — instrumentation, not prose. */
+.label {
+  font-family: var(--font-label);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.6875rem;
+  line-height: 1;
+}
+
+/* Visible focus, hard-edged. Never removed — accessibility baseline. */
+:focus-visible {
+  outline: 2px solid var(--color-prime-amber);
+  outline-offset: 1px;
+}
+
+/* Motion is information. Users who ask for less get the same information. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
