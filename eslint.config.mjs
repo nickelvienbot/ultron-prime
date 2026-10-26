@@ -1,18 +1,21 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextVitals from "eslint-config-next/core-web-vitals";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+/**
+ * Flat config (ESLint 9).
+ *
+ * eslint-config-next 16 ships native flat arrays. Do NOT route them through
+ * FlatCompat: @eslint/eslintrc then tries to validate a flat config as legacy
+ * and dies on a circular reference — `TypeError: Converting circular structure
+ * to JSON`, pointing at the react plugin. core-web-vitals already includes the
+ * `next` and `next/typescript` rule groups, so one import covers all three.
+ */
+const config = [
+  { ignores: [".next/**", "node_modules/**", "harvest/**"] },
+  ...nextVitals,
   {
     rules: {
-      // The craft invariants, enforced by lint rather than trusted to memory:
-      // a number with no source is the failure mode this project exists to avoid.
+      // Craft invariant, enforced rather than remembered: a number with no
+      // source is the failure mode this project exists to avoid.
       "no-restricted-syntax": [
         "warn",
         {
@@ -24,9 +27,6 @@ const eslintConfig = [
       ],
     },
   },
-  {
-    ignores: [".next/**", "node_modules/**", "harvest/**"],
-  },
 ];
 
-export default eslintConfig;
+export default config;
